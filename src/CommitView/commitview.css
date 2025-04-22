@@ -1,0 +1,118 @@
+.commit-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  .commit-title {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    align-items: center;
+
+    .copy {
+      padding: 0 3px;
+      cursor: pointer;
+
+      .copy-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .copy-icon:hover {
+        box-shadow: 0 4px 8px rgb(0 0 0 / 0.15);
+      }
+    }
+
+    .commit-title-text {
+      position: relative;
+
+      .copy-check {
+        position: absolute;
+        top: -20px;
+        right: -0;
+
+        opacity: 0;
+        visibility: hidden; /* 스크린 리더 등 접근성을 위해 visibility도 제어 */
+
+        /* 기본 스타일 (원하는 대로 수정) */
+        padding: 0 5px;
+        background-color: #808080; /* 녹색 배경 */
+        color: white;
+        border-radius: 4px;
+        margin-left: 10px; /* 버튼과의 간격 */
+      }
+
+      .show {
+        visibility: visible; /* 보이도록 변경 */
+        opacity: 0.5;
+      }
+
+    }
+  }
+  .commit-message {
+    margin: 0.5rem 0;
+    display: flex;
+    .commit-message-textarea {
+      resize: vertical;
+      outline: 2px solid transparent !important;
+      outline-offset: 2px !important;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-weight: 600;
+      border-color: #e0e6ed;
+      border-radius: 0.375rem;
+      border-width: 1px;
+      min-height: 150px;
+      width: 100%;
+    }
+  }
+  .commit-committer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    .commit-committer-title-wrapper {
+      display: flex;
+      justify-content: space-between;
+      .commit-committer-title {
+        font-weight: 600;
+      }
+    }
+    .commit-committer-items {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  .commit-parents {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    .commit-parents-title {
+      font-weight: 600;
+    }
+    .commit-parents-items-wrapper {
+      display: flex;
+      gap: 0.5rem;
+      .parent-badge {
+        border-style: solid;
+        padding: 0.125rem 0.5rem;
+        font-size: 0.75rem;
+        line-height: 1rem;
+        font-weight: 600;
+        position: relative;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+        border-radius: 0.25rem;
+        border-width: 1px;
+        border-color: gray;
+        color: gray;
+        cursor: pointer;
+      }
+      .parent-badge:hover {
+        box-shadow: 0 4px 8px rgb(0 0 0 / 0.15);
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+.git-ui {
+  display: flex;
+  gap: 0.5rem;
+  min-height: 1000px;
+
+  .left-panel {
+    width: 60%;
+  }
+
+  .left-panel.full-view {
+    width: 100%;
+  }
+
+  .left-panel.active {
+    display: block;
+  }
+
+  .left-panel.none-active {
+    display: none;
+  }
+
+  .right-panel {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

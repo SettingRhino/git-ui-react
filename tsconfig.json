@@ -1,0 +1,32 @@
+// tsconfig.json
+{
+  "compilerOptions": {
+    // ... 기존 설정들 ...
+
+    "target": "ESNext", // 최신 JS 기능 사용 가능하도록
+    "module": "ESNext", // 모듈 시스템
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx", // 최신 JSX 변환 사용
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "bundler", // Vite 권장 설정
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true, // Vite 요구 사항
+    "noEmit": true, // JavaScript 파일 생성은 Vite/Rollup이 담당
+
+    /* Linting */
+    // ... 기존 린팅 설정들 ...
+
+    /* Library specific */
+    "declaration": true, // .d.ts 파일 생성 활성화 (vite-plugin-dts가 처리)
+    "declarationMap": true, // .d.ts.map 파일 생성 (소스맵)
+    "sourceMap": true, // .js.map 파일 생성 (Vite 설정과 연동)
+
+    // "outDir": "dist", // 빌드 출력 디렉토리 (Vite 설정이 우선될 수 있음)
+    // "emitDeclarationOnly": true, // d.ts 파일만 생성 (vite-plugin-dts 사용 시 불필요할 수 있음)
+  },
+  "include": ["src"], // 빌드에 포함할 소스 폴더
+  "exclude": ["src/demo-api","src/main.tsx","src/App.tsx"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

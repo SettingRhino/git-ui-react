@@ -1,0 +1,59 @@
+{
+  "name": "@settingrhino/git-ui-react",
+  "private": false,
+  "version": "0.1.1",
+  "type": "module",
+  "files": [
+    "lib",
+    "LICENSE"
+  ],
+  "keywords": ["ui","git","gitgraph","react","component"],
+  "license": "MIT",
+  "main": "./lib/git-ui-react.umd.js",
+  "module": "./lib/git-ui-react.es.js",
+  "style": "./lib/git-ui-react.css",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/git-ui-react.es.js",
+      "require": "./lib/git-ui-react.umd.js"
+    },
+    "./style.css": "./lib/git-ui-react.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@codemirror/view": "^6.36.4",
+    "@gitgraph/react": "^1.6.0",
+    "@uiw/react-codemirror": "^4.23.7",
+    "parse-diff": "^0.11.1",
+    "react-diff-viewer-continued": "^3.4.0"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "^4.5.3",
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^22.14.1",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "eslint": "^9.22.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.0.3",
+    "vite-plugin-svgr": "^4.3.0",
+    "axios": "^1.7.9"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "packageManager": "pnpm@10.8.1+sha512.c50088ba998c67b8ca8c99df8a5e02fd2ae2e2b29aaf238feaa9e124248d3f48f9fb6db2424949ff901cffbb5e0f0cc1ad6aedb602cd29450751d11c35023677"
+}
