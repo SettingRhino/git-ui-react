@@ -27,6 +27,6 @@
     // "emitDeclarationOnly": true, // d.ts 파일만 생성 (vite-plugin-dts 사용 시 불필요할 수 있음)
   },
   "include": ["src"], // 빌드에 포함할 소스 폴더
-  "exclude": ["src/demo-api","src/main.tsx","src/App.tsx"],
+  "exclude": ["src/demo","src/main.tsx","src/App.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

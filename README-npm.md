@@ -50,4 +50,3 @@ export const FullView = () => {
 #### Warning
 
 **Incompatible with StrictMode:** May cause errors in StrictMode environments.
-

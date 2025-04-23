@@ -1,22 +1,13 @@
-## @settingrhino/git-ui-react
+import {BranchCommits, GitDiff, GitGraphState, GitUI, Tag, useGetGitGraph} from "../../index.ts";
+import {useEffect, useState} from "react";
+import {getBranchesCommitWithTags, getCommitDiff, getCommitOriginFile} from "../gitlab-api.tsx";
 
-@settingrhino/git-ui-react provides a GUI to check Git's branch graph and file changes.
+const initGraphData = { gitData: { tags: [], branchCommits: [] }, isLoading: true };
 
-### Installation
-```
-npm install @settingrhino/git-ui-react
-pnpm install @settingrhino/git-ui-react
-yarn add @settingrhino/git-ui-react
-```
-
-### Example
-You can check the examples by coming to the Git repository.(src/demo)
-```
 export const FullView = () => {
     const [graphState, setGraphState] = useState<GitGraphState>(initGraphData)
     useEffect(() => {
         // Promise<{ tags: Tag[]; branchCommits: BranchCommits[]; }>
-        // User-provided Promise function
         getBranchesCommitWithTags(901,['dev','main','stage']).then((res:{
             tags: Tag[];
             branchCommits: BranchCommits[];
@@ -34,20 +25,12 @@ export const FullView = () => {
         }
     },[])
     const getDiffs: (commitId: string) => Promise<GitDiff[] | null | undefined> = (commitId: string)=>{
-        // User-provided Promise function
         return getCommitDiff(901,commitId)
     }
     const getOriginFile = async (commitId: string, path:string): Promise<string|null|undefined> => {
-        // User-provided Promise function
         return getCommitOriginFile(901,commitId, path)
     }
     const graphUIState = useGetGitGraph({ gitGraph: { graphState: graphState }, commitFileView: { getDiffs: getDiffs },codeDiffView:{getOriginFile} });
 
     return  <GitUI {...graphUIState.ui}/>
 }
-```
-
-#### Warning
-
-**Incompatible with StrictMode:** May cause errors in StrictMode environments.
-

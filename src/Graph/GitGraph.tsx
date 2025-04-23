@@ -50,7 +50,6 @@ export const GitGraph = ({ isLoading = false, gitData, commitAction, className, 
           }}
         >
           {(gitgraph) => {
-            console.warn('gitgraph');
             gitGraphRender(gitgraph, convertData.gitRenderCommits, convertData.allBranches, convertData.tags, convertData.selectedBranchName, commitAction);
           }}
         </Gitgraph>
