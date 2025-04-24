@@ -1,12 +1,12 @@
 import type {
   CommitFileViewType,
-  GitDiff,
 } from './type.ts';
 import { useEffect } from 'react';
 import { IconError, IconLoading } from '../common/svgs';
 import { ChangeEventCounts } from './ChangeEvent.tsx';
 import { FilePath } from './FilePath.tsx';
 import './commit-file-view.css';
+import { GitDiff } from "../common/type.ts";
 
 const djb2HashCodeKey = (diff: GitDiff[]) => {
   if (!diff || diff.length === 0) {

@@ -1,11 +1,12 @@
 import type {
   GitChangeEventCountLabel,
-  GitChangeEventType, GitDiff,
+  GitChangeEventType,
 } from './type.ts';
 import { useMemo } from 'react';
 import { IconAdded, IconDeleted, IconModified, IconRename, IconUnknown } from '../common/svgs';
 import { GitChangeEvent } from './constant.ts';
 import { getEventLabels } from './utils.ts';
+import { GitDiff } from "../common/type.ts";
 
 export const ChangeEventIcon = ({ action, className }: { action: GitChangeEventType; className?: string }) => {
   if (action === GitChangeEvent.Added) {

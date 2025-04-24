@@ -1,5 +1,5 @@
-import type { Branch, BranchCommits, Commit, CommitAction, GitGraphState, GitGraphType, GraphUtil, Tag } from './type.ts';
+import type { BranchCommits, CommitAction, GitGraphState, GitGraphType, GraphUtil } from './type.ts';
 import { GitGraph } from './GitGraph.tsx';
 
-export type { Branch, BranchCommits, Commit, CommitAction, GitGraphState, GitGraphType, GraphUtil, Tag };
+export type { BranchCommits, CommitAction, GitGraphState, GitGraphType, GraphUtil };
 export { GitGraph };

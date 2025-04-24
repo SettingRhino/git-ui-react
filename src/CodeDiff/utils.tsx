@@ -155,7 +155,7 @@ export const convertDiffSetting: ConvertDiffSettingType = (commit, diff, handleC
         diff: diff.diff || '',
         handleClose,
       };
-    } else if (diff.a_mode !== diff.a_mode) {
+    } else if (diff.a_mode !== diff.b_mode) {
       return {
         mode: CodeViewMode.Label,
         title: <CodeDiffBasicLabelTitle iconStatus={GitChangeStatusIcon.ModeChanged} str={`mode Change ${diff.a_mode} => ${diff.b_mode}`} />,

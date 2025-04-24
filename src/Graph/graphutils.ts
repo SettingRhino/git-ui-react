@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import type { Branch, BranchCommits, ChildCommit, Commit, CommitAction, Tag } from './type.ts';
+import type { BranchCommits, ChildCommit, CommitAction } from './type.ts';
 import {
   githubColors,
   githubSubColors,
@@ -7,6 +7,7 @@ import {
   tagLikeBranchStyle,
   tagStyle,
 } from './constant.ts';
+import { Branch, Tag, Commit } from "../common/type.ts";
 
 type ReactSvgElement = ReactElement<SVGElement>;
 
@@ -220,12 +221,6 @@ const getMergeSimplePriorityBranchName = (branches: Branch[], commitRender: GitR
   //                  X ->  undefined
   // 2. 1번이 undefined, branches 중 가장 최신 커밋인 branch 선정
   const commitID = commitRender.getCommit().id;
-  if (commitID && branches.find(b => b.commit.id === commitID)) {
-    const innerBranch = branches.find(b => b.commit.id === commitID);
-    if (innerBranch) {
-      return innerBranch.name;
-    }
-  }
   if (lastHistoryBranchName && branches.find(b => b.name === lastHistoryBranchName)) {
     const innerBranch = branches.find(b => b.name === lastHistoryBranchName);
     if (innerBranch) {
@@ -234,6 +229,12 @@ const getMergeSimplePriorityBranchName = (branches: Branch[], commitRender: GitR
   }
   if (selectedBranchName && branches.find(b => b.name === selectedBranchName)) {
     const innerBranch = branches.find(b => b.name === selectedBranchName);
+    if (innerBranch) {
+      return innerBranch.name;
+    }
+  }
+  if (commitID && branches.find(b => b.commit.id === commitID)) {
+    const innerBranch = branches.find(b => b.commit.id === commitID);
     if (innerBranch) {
       return innerBranch.name;
     }

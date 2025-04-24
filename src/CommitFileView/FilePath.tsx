@@ -1,7 +1,7 @@
-import type { GitDiff } from './type.ts';
 import { useEffect, useState } from 'react';
 import { ChangeEventIcon } from './ChangeEvent.tsx';
 import { getGitChangeEvent } from './utils.ts';
+import { GitDiff } from "../common/type.ts";
 
 export const FilePath = ({ diffs = [], handlePathClick }: { diffs: GitDiff[]; handlePathClick?: (item: GitDiff | null) => void }) => {
   const [activeDiff, setActiveDiff] = useState<{ index: number; diff: GitDiff | null } | null>(null);
@@ -26,14 +26,14 @@ export const FilePath = ({ diffs = [], handlePathClick }: { diffs: GitDiff[]; ha
           });
         };
         return (
-          <FilePathItem key={`file_${index}_${item?.new_path}`} active={activeDiff?.index === index} handlePathClick={click} item={item} />
+          <FilePathItem key={`file_${index}_${item?.new_path}`} active={activeDiff?.index === index} handlePathClick={click} item={item} path={item.deleted_file ? item.old_path : item.new_path} />
         );
       })}
     </div>
   );
 };
 
-const FilePathItem = ({ item, handlePathClick, active = false }: { item: GitDiff; handlePathClick?: (item: GitDiff) => void; active?: boolean }) => {
+const FilePathItem = ({ item, path, handlePathClick, active = false }: { item: GitDiff; path: string; handlePathClick?: (item: GitDiff) => void; active?: boolean }) => {
   const gitAction = getGitChangeEvent(item);
   const handleClick = () => {
     if (handlePathClick) {
@@ -43,7 +43,7 @@ const FilePathItem = ({ item, handlePathClick, active = false }: { item: GitDiff
   return (
     <div className={`path-item ${active ? 'active' : ''}`} onClick={handleClick}>
       <ChangeEventIcon action={gitAction} className={`action-icon ${gitAction.toLowerCase()}`} />
-      <div className="path-value" title={item.new_path}>{item.new_path}</div>
+      <div className="path-value" title={path}>{path}</div>
     </div>
   );
 };

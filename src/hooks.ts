@@ -1,10 +1,11 @@
 import type { CodeDiffType } from './CodeDiff';
-import type { CommitFileViewState, CommitFileViewType, GitDiff } from './CommitFileView';
+import type { CommitFileViewState, CommitFileViewType } from './CommitFileView';
 import type { CommitViewType } from './CommitView';
-import {BranchCommits, Commit, CommitAction, GitGraphState, GitGraphType, GraphUtil} from './Graph';
+import { BranchCommits, CommitAction, GitGraphState, GitGraphType, GraphUtil} from './Graph';
 import { useEffect, useMemo, useState } from 'react';
 import { convertDiffSetting } from './CodeDiff';
 import { convertCommitView } from './CommitView';
+import { Commit, GitDiff } from "./common/type.ts";
 
 const initGraphData = { gitData: { tags: [], branchCommits: [] }, isLoading: true };
 const initFileViewData = { diffs: [], isLoading: true, isError: false };

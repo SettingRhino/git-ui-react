@@ -1,15 +1,5 @@
 import type { GitChangeEvent } from './constant.ts';
-
-export type GitDiff = {
-  diff?: string;
-  new_path: string;
-  old_path: string;
-  a_mode: string;
-  b_mode: string;
-  new_file: boolean;
-  renamed_file: boolean;
-  deleted_file: boolean;
-};
+import { GitDiff } from "../common/type.ts";
 
 export type GitChangeEventType = typeof GitChangeEvent[keyof typeof GitChangeEvent];
 

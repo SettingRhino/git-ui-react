@@ -1,5 +1,6 @@
-import type { GitChangeEventCountLabel, GitChangeEventType, GitDiff } from './type.ts';
+import type { GitChangeEventCountLabel, GitChangeEventType } from './type.ts';
 import { GitChangeEvent } from './constant.ts';
+import { GitDiff } from "../common/type.ts";
 
 export const getGitChangeEvent = (diff: GitDiff): GitChangeEventType => {
   try {

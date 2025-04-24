@@ -1,20 +1,6 @@
-export type Commit = {
-  id: string;
-  short_id?: string;
-  created_at: string;
-  parent_ids: string[];
-  title: string;
-  message: string;
-  author_name?: string;
-  author_email?: string;
-  authored_date?: string;
-  committer_name?: string;
-  committer_email?: string;
-  committed_date: string;
-  trailers?: Record<string, unknown>;
-  extended_trailers?: Record<string, unknown>;
-  web_url?: string;
-};
+import { Branch, Tag, Commit } from "../common/type.ts";
+
+
 
 export type ChildCommit = {
   commit: Commit;
@@ -30,33 +16,6 @@ export type ChildCommit = {
   isMergeDirect: boolean | null;
 };
 
-/**
- * 브랜치 정보
- */
-export type Branch = {
-  name: string;
-  commit: Commit;
-  merged?: boolean;
-  protected?: boolean;
-  developers_can_push?: boolean;
-  developers_can_merge?: boolean;
-  can_push?: boolean;
-  default?: boolean;
-  web_url?: string;
-};
-
-/**
- * 태그 정보
- */
-export type Tag = {
-  name: string;
-  message: string;
-  target?: string;
-  commit: Commit;
-  release?: any | null;
-  protected?: boolean;
-  created_at: string | null;
-};
 
 export type BranchCommits = {
   branch: Branch;
