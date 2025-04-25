@@ -29,7 +29,13 @@ import {
     transformGithubBranchToBranch,
     gitContentBase64Decode
 } from './tranform/github.ts'
+import {
+    transformGiteaCommitToCommit,
+    transformGitHubBranchCommitsAndTags,
+    transformGiteaV3PatchMultiFileDiff,
+} from './tranform/gitea.ts'
 import type { GitHubTagResponse, GitHubBranchResponse,GitHubCommitResponse, GitHubBranchCommits } from './tranform/github.ts'
+import type { GiteaTagResponse, GiteaBranchResponse,GiteaCommitResponse, GiteaBranchCommits } from './tranform/gitea.ts'
 
 export type {
     Branch, BranchCommits, Commit, Tag, GitDiff,
@@ -37,7 +43,8 @@ export type {
     CodeDiffAdded, CodeDiffAlertLabel, CodeDiffChanged, CodeDiffType, CodeDiffUnknownLabel, ConvertDiffSettingType,
     CommitFileViewState, CommitFileViewType,
     CommitViewType,
-    GitHubTagResponse, GitHubBranchResponse,GitHubCommitResponse, GitHubBranchCommits
+    GitHubTagResponse, GitHubBranchResponse,GitHubCommitResponse, GitHubBranchCommits,
+    GiteaTagResponse, GiteaBranchResponse,GiteaCommitResponse, GiteaBranchCommits
 }
 
 export  {
@@ -51,5 +58,8 @@ export  {
     transformGitHubBranchCommits,
     transformGitHubTagToCommit,
     transformGithubBranchToBranch,
-    gitContentBase64Decode
+    gitContentBase64Decode,
+    transformGiteaCommitToCommit,
+    transformGitHubBranchCommitsAndTags,
+    transformGiteaV3PatchMultiFileDiff,
 }

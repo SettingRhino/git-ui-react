@@ -1,14 +1,11 @@
-
-// 필요 함수?
-// Get Commits By Branch
-
 import axios, { AxiosResponse } from 'axios';
 import { AxiosRequestConfig } from "axios";
-import { BranchCommits, Tag } from "../index.ts";
+import {gitContentBase64Decode } from "../index.ts"
+import type {GiteaBranchCommits, GiteaTagResponse} from "../index.ts"
 
-// const gitUrl =  import.meta.env.VITE_GITLAB_URL;
-// const gittoken =  import.meta.env.VITE_GITLAB_TOKEN;
-
+//
+// const gitUrl =  import.meta.env.VITE_GITEA_URL;
+// const gittoken =  import.meta.env.VITE_GITEA_TOKEN;
 
 /**
  * Link 헤더 값을 파싱하여 rel 속성별 URL을 추출하는 헬퍼 함수입니다.
@@ -47,7 +44,7 @@ const parseLinkHeader = (linkHeader: string | undefined): { [key: string]: strin
  * @param accumulatedDatas 이전 페이지들에서 누적된 데이터 배열.
  * @returns 모든 페이지의 데이터가 포함된 배열로 resolve되는 Promise.
  */
- const fetchDatasRecursive = async (url: string, token: string, accumulatedDatas: any[] = []): Promise<any[]> => {
+const fetchDatasRecursive = async (url: string, token: string, accumulatedDatas: any[] = []): Promise<any[]> => {
     console.log(`호출 중: ${url}`); // 디버깅을 위한 로그
 
     const config: AxiosRequestConfig = {
@@ -78,7 +75,7 @@ const parseLinkHeader = (linkHeader: string | undefined): { [key: string]: strin
         if (links.next) {
             // 'next' 링크가 있다면, 다음 페이지 URL과 합쳐진 데이터를 가지고 재귀 호출
             console.log(`다음 페이지 발견: ${links.next}`);
-            return await fetchDatasRecursive(links.next,token, allDatas);
+            return await fetchDatasRecursive(links.next, token,allDatas);
         } else {
             // 재귀 종료 조건: 'next' 링크가 없으면, 모든 누적된 데이터를 반환
             console.log('더 이상 페이지 없음. 가져오기 완료.');
@@ -98,8 +95,8 @@ const parseLinkHeader = (linkHeader: string | undefined): { [key: string]: strin
 }
 
 
-const getBranch = async (url: string, token: string, projectID: string | number, branchName: string): Promise<any> => {
-    const initialUrl = `${url}/api/v4/projects/${projectID}/repository/branches/${branchName}`;
+const getBranchByGitea = async (url:string, token: string,repoName: string, branchName: string): Promise<any> => {
+    const initialUrl = `${url}/api/v1/repos/${repoName}/branches/${branchName}`;
 
     const config: AxiosRequestConfig = {
         method: 'get',
@@ -107,24 +104,25 @@ const getBranch = async (url: string, token: string, projectID: string | number,
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-            // GitLab이 다른 헤더를 요구할 경우 여기에 추가
         },
         // 다음 페이지 URL에는 이미 쿼리 파라미터가 포함되어 있으므로 여기서는 'params'를 설정하지 않음
     };
     return axios(config);
 };
- const getCommits = async (url: string, token: string, projectID: string | number, branchName: string, perPage: number = 100): Promise<any[]> => {
-    const initialUrl = `${url}/api/v4/projects/${projectID}/repository/commits?ref_name=${branchName}&per_page=${perPage}`;
+
+const getCommitsByGitea = async (url:string, token: string,repoName: string, branchName: string, perPage: number = 1): Promise<any[]> => {
+    const initialUrl = `${url}/api/v1/repos/${repoName}/commits?sha=${branchName}&limit=${perPage}`;
     console.log('Commits 대한 재귀적 가져오기 시작...');
     // 초기 URL로 재귀 프로세스 시작
-    return fetchDatasRecursive(initialUrl,token);
+    return fetchDatasRecursive(initialUrl, token);
 };
 
-const getBranchCommit = async (url: string, token: string,projectID: string | number, branchName: string): Promise<any> => {
+
+const getBranchCommitByGitea = async (url:string, token: string,repoName: string, branchName: string): Promise<any> => {
     try {
-        const brancheRes = await getBranch(url,token,projectID, branchName);
+        const brancheRes = await getBranchByGitea(url, token,repoName, branchName);
         const branch = brancheRes.data;
-        const commits = await getCommits(url,token,projectID, branchName);
+        const commits = await getCommitsByGitea(url, token, repoName, branchName);
         return { branch, commits };
     } catch (error) {
         console.error(error);
@@ -132,20 +130,18 @@ const getBranchCommit = async (url: string, token: string,projectID: string | nu
     }
 };
 
-
-
-const getBranchesCommit = async (url: string, token: string, projectID: string | number, branchNames: string[]): Promise<any> => {
+const getBranchesCommitByGitea = async (url:string, token: string,repoName: string, branchNames: string[]): Promise<any> => {
     try {
-        return await Promise.all(branchNames.map(branchName => getBranchCommit(url,token,projectID, branchName)));
+        return await Promise.all(branchNames.map(branchName => getBranchCommitByGitea(url, token,repoName, branchName)));
     } catch (error) {
         console.error(error);
         throw error;
     }
 };
 
-const getTags = async (url: string, token: string, projectID: string | number, perPage: number = 100): Promise<any[]> => {
+const getTagsByGitea = async (url:string, token: string,repoName: string, perPage: number = 100): Promise<any[]> => {
     try {
-        const initialUrl = `${url}/api/v4/projects/${projectID}/repository/tags?per_page=${perPage}`;
+        const initialUrl = `${url}/api/v1/repos/${repoName}/tags?limits=${perPage}`;
         return fetchDatasRecursive(initialUrl,token);
     } catch (error) {
         console.error(error);
@@ -153,14 +149,13 @@ const getTags = async (url: string, token: string, projectID: string | number, p
     }
 };
 
-
-export const getBranchesCommitWithTags = async (url: string, token: string, projectID: string | number, branchNames: string[]): Promise<{
-    tags: Tag[];
-    branchCommits: BranchCommits[];
+export const getBranchesCommitWithTagsByGitea = async (url:string, token: string, repoName: string, branchNames: string[]): Promise<{
+    tags: GiteaTagResponse[];
+    branchCommits: GiteaBranchCommits[];
 }> => {
     try {
-        const branchCommits = await getBranchesCommit(url,token,projectID,branchNames)
-        const tags = await getTags(url,token,projectID)
+        const branchCommits = await getBranchesCommitByGitea(url, token,repoName, branchNames)
+        const tags = await getTagsByGitea(url, token,repoName)
         return {
             branchCommits,
             tags,
@@ -171,34 +166,30 @@ export const getBranchesCommitWithTags = async (url: string, token: string, proj
     }
 }
 
-
-// Get Commit Diff
-// Get Commit Original File
-
-export const getCommitDiff = async (url: string, token: string, projectID: string | number, commitSha: string): Promise<any> => {
+export const getCommitDiffByGitea = async (url:string, token: string, repoName: string, commitSha: string): Promise<any> => {
     try {
-        const initialUrl = `${url}/api/v4/projects/${projectID}/repository/commits/${commitSha}/diff`;
+        const initialUrl = `${url}/api/v1/repos/${repoName}/git/commits/${commitSha}.patch`;
 
         const config: AxiosRequestConfig = {
             method: 'get',
             url: initialUrl, // 제공된 URL 사용 (초기 URL 또는 다음 페이지 URL)
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
                 // GitLab이 다른 헤더를 요구할 경우 여기에 추가
             },
             // 다음 페이지 URL에는 이미 쿼리 파라미터가 포함되어 있으므로 여기서는 'params'를 설정하지 않음
         };
-        const diffs = await axios(config);
-        return diffs.data || [];
+        const diffString = await axios(config);
+
+        return diffString.data || '';
     } catch (error) {
         console.error(error);
         throw error;
     }
 };
 
-export const getCommitOriginFile = async (url: string, token: string, projectID: string | number, commitSha: string, path: string): Promise<any> => {
-    const initialUrl = `${url}/api/v4/projects/${projectID}/repository/files/${encodeURIComponent(path)}/raw?ref=${commitSha}`;
+export const getCommitOriginFileByGitea = async (url:string, token: string,repoName: string | number, commitSha: string, path: string): Promise<any> => {
+    const initialUrl = `${url}/api/v1/repos/${repoName}/contents/${encodeURIComponent(path)}?ref=${commitSha}`;
     const config: AxiosRequestConfig = {
         method: 'get',
         url: initialUrl, // 제공된 URL 사용 (초기 URL 또는 다음 페이지 URL)
@@ -209,6 +200,7 @@ export const getCommitOriginFile = async (url: string, token: string, projectID:
         },
         // 다음 페이지 URL에는 이미 쿼리 파라미터가 포함되어 있으므로 여기서는 'params'를 설정하지 않음
     };
-    const files = await axios(config);
-    return files.data;
+
+    const response = await axios(config);
+    return gitContentBase64Decode(response.data?.content || null)
 };

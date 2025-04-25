@@ -117,7 +117,6 @@ export const gitRawRefactor = (tags: Tag[], branchCommits: BranchCommits[]): { g
   // 1. 모두 시간 정렬할것.
   // branch는 default가 1번, Head Commit이 최신 순
   // commit은 오래된 순
-  // 임시
   let allCommits: Commit[] = [];
   const commitBranchMap: Map<string, Branch[]> = new Map();
   const CommitMap: Map<string, GitRenderCommit> = new Map();
@@ -349,10 +348,72 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
     });
   };
 
+  const mergeRender = (commit: Commit, branchGraph: BranchUserApi<ReactSvgElement>) => {
+    const sourceCommit = commit.parent_ids[1];
+    const sourceHistory = historyMap.get(sourceCommit);
+    const sourceBranchName = sourceHistory?.branchName || generateCommitTempBranch(commit.id);
+    const sourceBranchGraph = getOrCreateBranchGraph(sourceBranchName || `error_source_${commit.id}`, sourceHistory?.branch);
+    try {
+      branchGraph.merge({
+        branch: sourceBranchGraph,
+        commitOptions: {
+          hash: commit.id,
+          subject: commit.title,
+          author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
+          parents: commit.parent_ids,
+          onClick: () => {
+            if (commitAction?.onDotClick) {
+              commitAction.onDotClick(commit);
+            }
+          },
+          onMessageClick: () => {
+            if (commitAction?.onMessageClick) {
+              commitAction.onMessageClick(commit);
+            }
+          },
+        },
+      });
+    } catch (e) {
+      console.warn('Failed to merge', e);
+      branchGraph.commit({
+        hash: commit.id,
+        subject: commit.title,
+        author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
+        parents: commit.parent_ids,
+        onClick: () => {
+          if (commitAction?.onDotClick) {
+            commitAction.onDotClick(commit);
+          }
+        },
+        onMessageClick: () => {
+          if (commitAction?.onMessageClick) {
+            commitAction.onMessageClick(commit);
+          }
+        },
+      });
+    }
+  }
+  const commitRender = (commit: Commit, branchGraph: BranchUserApi<ReactSvgElement>) => {
+    branchGraph.commit({
+      hash: commit.id,
+      subject: commit.title,
+      author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
+      parents: commit.parent_ids,
+      onClick: () => {
+        if (commitAction?.onDotClick) {
+          commitAction.onDotClick(commit);
+        }
+      },
+      onMessageClick: () => {
+        if (commitAction?.onMessageClick) {
+          commitAction.onMessageClick(commit);
+        }
+      },
+    });
+  }
   renderCommits.forEach((renderCommit, index) => {
     try {
       const { commit, branches, childCommits } = renderCommit.spread();
-      // debugger;
       let renderGraph: any;
       let renderBranchName: string = '';
       // 분기
@@ -364,74 +425,7 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
       }
       //
       const findTraceParent = traceParent.get(commit.id);
-      if (renderCommit.isMergeCommit()) { // 병합지점
-        // target branch 이름 찾기.
-        // 0. 이곳이 l
-        // 1. 주요 부모의 Branch 이름 Historu
-        // 2. 주요 부모의 Branch 이름이 내 브런치 목록에 있다?
-        //    (ㅇ) : 주요 부모 이름
-        // .   (x) : 추천 이름(브런치 이름 중, 셀렉트된 브런치 - 가장 마지막 커밋)
-        //
-        const [importantParentCommit, sourceCommit] = commit.parent_ids; // 주요 부모
-        const importantParentHistory = historyMap.get(importantParentCommit);
-        const priorityTargetBranchName = getMergeSimplePriorityBranchName(branches, renderCommit, importantParentHistory?.branchName, selectedBranch?.name) || generateCommitTempBranch(commit.id) || '';
-        // from에 대해서 좀더 고민.
-        // importantParentCommit 브런치가 현재 브런치에 존재하면 -> from에 넣어햐하고
-        // 아니면 그냥 Commit
-
-        const targetBranchFrom: string | undefined | BranchUserApi<ReactSvgElement> = branches.find(b => b.name === importantParentHistory?.branchName) ? importantParentHistory?.branch : importantParentHistory?.renderCommit.getCommit().id;
-        const targetBranchGraph = getOrCreateBranchGraph(priorityTargetBranchName || '', targetBranchFrom);
-
-        // source
-        const sourceHistory = historyMap.get(sourceCommit);
-        const sourceBranchName = sourceHistory?.branchName || generateCommitTempBranch(commit.id);
-        // const sourceBranchName = getSimplePriorityBranchName(sourceHistory?.renderCommit?.getBranches() || [], sourceHistory?.branchName, selectedBranch?.name) || sourceHistory?.renderCommit.getCommit().id || `error_source_${commit.id}`;
-        // from에 대해서 좀더 고민.
-
-        const sourceBranchGraph = getOrCreateBranchGraph(sourceBranchName || `error_source_${commit.id}`, sourceHistory?.branch);
-
-        try {
-          targetBranchGraph.merge({
-            branch: sourceBranchGraph,
-            commitOptions: {
-              hash: commit.id,
-              subject: commit.title,
-              author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
-              parents: commit.parent_ids,
-              onClick: () => {
-                if (commitAction?.onDotClick) {
-                  commitAction.onDotClick(commit);
-                }
-              },
-              onMessageClick: () => {
-                if (commitAction?.onMessageClick) {
-                  commitAction.onMessageClick(commit);
-                }
-              },
-            },
-          });
-        } catch (e) {
-          console.warn('Failed to merge', e);
-          targetBranchGraph.commit({
-            hash: commit.id,
-            subject: commit.title,
-            author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
-            parents: commit.parent_ids,
-            onClick: () => {
-              if (commitAction?.onDotClick) {
-                commitAction.onDotClick(commit);
-              }
-            },
-            onMessageClick: () => {
-              if (commitAction?.onMessageClick) {
-                commitAction.onMessageClick(commit);
-              }
-            },
-          });
-        }
-        renderBranchName = priorityTargetBranchName;
-        renderGraph = targetBranchGraph;
-      } else if (findTraceParent) {
+        if (findTraceParent) {
         // 분기되어 나온 자식
         // History 뒤져서 -> 부모가 쓴 브렌치 이름을 찾는다.
         let isMergeDirect = findTraceParent.isMergeDirect;
@@ -459,25 +453,16 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
           } else {
             branchGraph = getOrCreateBranchGraph(priorityBranchName || '', historyMap.get(parentCommit)?.branch);
           }
+          if(renderCommit.isMergeCommit()){
+            mergeRender(commit, branchGraph)
+            renderBranchName = priorityBranchName || '';
+            renderGraph = branchGraph;
+          }else{
+            commitRender(commit, branchGraph)
+            renderBranchName = priorityBranchName || '';
+            renderGraph = branchGraph;
+          }
 
-          branchGraph.commit({
-            hash: commit.id,
-            subject: commit.title,
-            author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
-            parents: commit.parent_ids,
-            onClick: () => {
-              if (commitAction?.onDotClick) {
-                commitAction.onDotClick(commit);
-              }
-            },
-            onMessageClick: () => {
-              if (commitAction?.onMessageClick) {
-                commitAction.onMessageClick(commit);
-              }
-            },
-          });
-          renderBranchName = priorityBranchName || '';
-          renderGraph = branchGraph;
         } else {
           // 방계는 새로 만든다.
           // 나의 브런치 중에, 부모 브런치 제외, 하고 남은 브랜치가 있으면 그중에 추천 브런치를 쓰고 아니면 임시 브런치를 만드는데 render = false
@@ -488,25 +473,16 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
 
           const priorityBranchName = getSimplePriorityBranchName(omitbranches, undefined, selectedBranch?.name) || generateCommitTempBranch(commit.id) || '';
           const branchGraph = getOrCreateBranchGraph(priorityBranchName, parentHistory?.renderCommit?.getCommit().id);
+          if(renderCommit.isMergeCommit()){
+            mergeRender(commit, branchGraph)
+            renderBranchName = priorityBranchName || '';
+            renderGraph = branchGraph;
+          }else{
+            commitRender(commit, branchGraph)
+            renderBranchName = priorityBranchName;
+            renderGraph = branchGraph;
+          }
 
-          branchGraph.commit({
-            hash: commit.id,
-            subject: commit.title,
-            author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
-            parents: commit.parent_ids,
-            onClick: () => {
-              if (commitAction?.onDotClick) {
-                commitAction.onDotClick(commit);
-              }
-            },
-            onMessageClick: () => {
-              if (commitAction?.onMessageClick) {
-                commitAction.onMessageClick(commit);
-              }
-            },
-          });
-          renderBranchName = priorityBranchName;
-          renderGraph = branchGraph;
         }
       } else {
         // simple Commit
@@ -527,25 +503,16 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
         }
         // const priorityBranchName = getSimplePriorityBranchName(omitbranches, historyMap.get(parentCommit)?.branchName, selectedBranch?.name) || commit.id;
         // const branchGraph = getOrCreateBranchGraph(priorityBranchName, historyMap.get(parentCommit)?.branch);
+          if(renderCommit.isMergeCommit()){
+            mergeRender(commit, branchGraph)
+            renderBranchName = commitBrachName || '';
+            renderGraph = branchGraph;
+          }else{
+            commitRender(commit, branchGraph)
+            renderBranchName = commitBrachName;
+            renderGraph = branchGraph;
+          }
 
-        branchGraph.commit({
-          hash: commit.id,
-          subject: commit.title,
-          author: `<span class="math-inline">${commit.author_name}</span>${commit.author_email}>`,
-          parents: commit.parent_ids,
-          onClick: () => {
-            if (commitAction?.onDotClick) {
-              commitAction.onDotClick(commit);
-            }
-          },
-          onMessageClick: () => {
-            if (commitAction?.onMessageClick) {
-              commitAction.onMessageClick(commit);
-            }
-          },
-        });
-        renderBranchName = commitBrachName;
-        renderGraph = branchGraph;
       }
       historyMap.set(commit.id, { renderCommit, branch: renderGraph, branchName: renderBranchName, index });
     } catch (e) {
