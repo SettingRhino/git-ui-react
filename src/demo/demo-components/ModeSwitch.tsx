@@ -211,7 +211,7 @@ export const ModeSwitchView = () => {
     },[SCM])
 
     return (
-        <div style={{ display: "flex", flexDirection: "column" , width: '70%', height: '100%'}}>
+        <div style={{ display: "flex", flexDirection: "column" , width: '80%', height: '100%'}}>
             <div style={{display: 'flex', gap: '1rem', }}>
                 <button style={{
                     background: SCM === SCMType.GITHUB ? 'skyblue':'aliceblue',

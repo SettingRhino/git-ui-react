@@ -1,25 +1,3 @@
-## @settingrhino/git-ui-react
-
-@settingrhino/git-ui-react provides a GUI to check Git's branch graph and file changes.
-
-### Installation
-```
-npm install @settingrhino/git-ui-react
-pnpm install @settingrhino/git-ui-react
-yarn add @settingrhino/git-ui-react
-```
-
-### Info
-This graph library was initially developed based on self-hosted GitLab.
-
-Currently, it offers utilities to convert data from GitHub and Gitea formats, making them suitable for graphing.
-These conversion functions are provided via `transform`.
-Please refer to the `demo` directory for usage examples.
-Furthermore, it allows you to import and use CSS files for styling.
-
-### Example
-You can check the examples by coming to the Git repository.(src/demo)
-```
 import {
     GitDiff,
     GitGraphState, GitHubBranchCommits, GitHubTagResponse,
@@ -27,10 +5,13 @@ import {
     transformGitHubBranchCommits,
     transformGitHubV3PatchMultiFileDiff,
     useGetGitGraph,
-} from "@settingrhino/git-ui-react";
+} from "../../index.ts";
 import {useEffect, useState} from "react";
 import { getBranchesCommitWithTagsByGitHub, getCommitDiffByGitHub, getCommitOriginFileByGitHub } from "../github-api.tsx";
-import "@settingrhino/git-ui-react/style.css"
+import {RepoInformation} from "./FullView.tsx";
+
+const initGraphData = { gitData: { tags: [], branchCommits: [] }, isLoading: true };
+
 // Sample
 const useGitHubHooks = (repoInformation: RepoInformation) => {
     const [graphState, setGraphState] = useState<GitGraphState>(initGraphData)
@@ -66,11 +47,3 @@ export const GitHubFullView = ({ repoInformation }: { repoInformation: RepoInfor
     const graphUIState = useGetGitGraph({ gitGraph: { graphState: graphState }, commitFileView: { getDiffs: getDiffs },codeDiffView:{getOriginFile} });
     return  <GitUI {...graphUIState.ui}/>
 }
-```
-
-### Sample Image 
-![sample](./images/sample-images-01.png)
-
-#### Warning
-
-**Incompatible with StrictMode:** May cause errors in StrictMode environments.
