@@ -69,7 +69,10 @@ export const GitHubFullView = ({ repoInformation }: { repoInformation: RepoInfor
 ```
 
 ### Sample Image 
-![sample](./images/sample-images-01.png)
+![sample](https://github.com/SettingRhino/git-ui-react/raw/main/images/sample-images-01.png)
+
+### npm
+https://www.npmjs.com/package/@settingrhino/git-ui-react
 
 #### Warning
 
