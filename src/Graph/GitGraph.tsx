@@ -50,6 +50,7 @@ export const GitGraph = ({ isLoading = false, gitData, commitAction, className, 
           }}
         >
           {(gitgraph) => {
+            gitgraph.clear()
             gitGraphRender(gitgraph, convertData.gitRenderCommits, convertData.allBranches, convertData.tags, convertData.selectedBranchName, commitAction);
           }}
         </Gitgraph>

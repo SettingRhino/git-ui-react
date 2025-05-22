@@ -73,7 +73,3 @@ export const GitHubFullView = ({ repoInformation }: { repoInformation: RepoInfor
 
 ### npm
 https://www.npmjs.com/package/@settingrhino/git-ui-react
-
-#### Warning
-
-**Incompatible with StrictMode:** May cause errors in StrictMode environments.

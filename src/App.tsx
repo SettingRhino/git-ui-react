@@ -1,8 +1,12 @@
 import { ModeSwitchView } from "./demo/demo-components/ModeSwitch.tsx";
+import {StrictMode} from "react";
 
 
 function App() {
-    return (<ModeSwitchView/>)
+    return (
+        <StrictMode>
+            <ModeSwitchView/>
+        </StrictMode>)
 }
 
 
