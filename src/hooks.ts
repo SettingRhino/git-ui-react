@@ -1,7 +1,7 @@
 import type { CodeDiffType } from './CodeDiff';
 import type { CommitFileViewState, CommitFileViewType } from './CommitFileView';
 import type { CommitViewType } from './CommitView';
-import { BranchCommits, CommitAction, GitGraphState, GitGraphType, GraphUtil} from './Graph';
+import { BranchCommits, CommitAction, GitGraphState, GitGraphType, GraphUtil, BranchColors } from './Graph';
 import { useEffect, useMemo, useState } from 'react';
 import { convertDiffSetting } from './CodeDiff';
 import { convertCommitView } from './CommitView';
@@ -30,6 +30,7 @@ export type GitGraphProps = { gitGraph?: {
   graphState?: GitGraphState;
   graphUtil?: GraphUtil;
   commitAction?: CommitAction;
+  colors?: BranchColors
 };
 commitView?: CommitViewType;
 commitFileView: {
@@ -144,6 +145,7 @@ export const useGetGitGraph = ({ gitGraph = { graphState: initGraphData }, commi
           onDotClick: handleDotClick,
           onMessageClick: handleMessageClick,
         },
+        colors: gitGraph?.colors,
       },
       commitView: {
         data: commitViewData,

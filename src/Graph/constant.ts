@@ -6,9 +6,9 @@ export const githubColors = [
   '#A371F7', // Purple
   '#F97583', // Pink
   '#FFAA2C', // Orange
-  '#1B1F23', // Black/Dark Grey (e.g., for main/master)
-  '#6f42c1', // Another Purple
-  '#d73a49', // Red
+  '#bec0c2',
+  '#6f42c1', // Another Purple /*
+  '#007904',
   '#0366d6', // Another Blue
   '#ffd33d', // Yellow
 ];
@@ -19,10 +19,10 @@ export const githubSubColors = [
   '#fd7e14', // Bright Orange
   '#17a2b8', // Cyan / Info Blue
   '#6610f2', // Deeper Purple / Indigo
-  '#e83e8c', // Hot Pink / Magenta
+  '#dba0a6',
   '#28a745', // Success Green (기존 녹색과 다른 톤)
   '#ffc107', // Amber / Warning Yellow
-  '#dc3545', // Danger Red (기존 빨간색과 다른 톤)
+  '#a67795',
   '#6c757d', // Mid Gray
 ];
 export const gitTagColors =[
@@ -69,33 +69,35 @@ export const tagStyle = { // 태그 스타일 (GitHub와 유사하게)
   pointerWidth: 6,
 };
 
-export const githubTemplate: any = templateExtend(TemplateName.Metro, {
-  colors: githubColors, // 정의한 색상 팔레트 적용
-  branch: {
-    lineWidth: 2, // 선 두께
-    mergeStyle: MergeStyle.Bezier, // 부드러운 곡선 병합 스타일 ('straight' 대신)
-    spacing: 30, // 브랜치 간 가로 간격 (조정 필요)
-    label: {
-      display: false, // 브랜치 라벨 표시
-      bgColor: '#f6f8fa', // GitHub 라벨과 유사한 배경색
-      color: '#24292e', // GitHub 라벨과 유사한 글자색
-      borderRadius: 0, // 둥근 모서리
-      font: 'normal 12px sans-serif', // 폰트 스타일
+export const getGitTemplate: any = ({ colors = githubColors }:{colors?: string[]})=>{
+  return templateExtend(TemplateName.Metro, {
+    colors, // 정의한 색상 팔레트 적용
+    branch: {
+      lineWidth: 2, // 선 두께
+      mergeStyle: MergeStyle.Bezier, // 부드러운 곡선 병합 스타일 ('straight' 대신)
+      spacing: 30, // 브랜치 간 가로 간격 (조정 필요)
+      label: {
+        display: false, // 브랜치 라벨 표시
+        bgColor: '#f6f8fa', // GitHub 라벨과 유사한 배경색
+        color: '#24292e', // GitHub 라벨과 유사한 글자색
+        borderRadius: 0, // 둥근 모서리
+        font: 'normal 12px sans-serif', // 폰트 스타일
+      },
     },
-  },
-  commit: {
-    spacing: 40, // 커밋 간 세로 간격 (조정 필요)
-    hasTooltipInCompactMode: false,
-    dot: {
-      size: 8, // 커밋 점 크기
-      strokeWidth: 12,
+    commit: {
+      spacing: 40, // 커밋 간 세로 간격 (조정 필요)
+      hasTooltipInCompactMode: false,
+      dot: {
+        size: 8, // 커밋 점 크기
+        strokeWidth: 12,
+      },
+      message: {
+        display: true, // 커밋 메시지 표시
+        displayAuthor: false, // 작성자 숨김 (GitHub 스타일)
+        displayHash: true, // 해시 숨김 (GitHub 스타일)
+        color: '#24292e', // 기본 글자 색상
+        font: 'normal 14px sans-serif', // 폰트 스타일
+      },
     },
-    message: {
-      display: true, // 커밋 메시지 표시
-      displayAuthor: false, // 작성자 숨김 (GitHub 스타일)
-      displayHash: true, // 해시 숨김 (GitHub 스타일)
-      color: '#24292e', // 기본 글자 색상
-      font: 'normal 14px sans-serif', // 폰트 스타일
-    },
-  },
-});
+  })
+}

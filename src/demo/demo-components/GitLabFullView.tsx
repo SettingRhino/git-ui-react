@@ -42,10 +42,17 @@ const useGitLabHooks = (repoInformation: RepoInformation) => {
     }
 }
 
+const colors = ['#F4ACB7','#A2D2FF','#90EE90','#FFEEAA','#E6E6FA']
+const colors2 =['#FFCBA4','#FFA07A','#AECFA6','#C8A2C8','#F5F5DC']
 
 export const GitLabFullView = ({ repoInformation }: { repoInformation: RepoInformation }) => {
     const { graphState, getDiffs, getOriginFile } = useGitLabHooks(repoInformation)
-    const graphUIState = useGetGitGraph({ gitGraph: { graphState: graphState }, commitFileView: { getDiffs: getDiffs },codeDiffView:{getOriginFile} });
+    const graphUIState = useGetGitGraph({ gitGraph: { graphState: graphState, colors:{
+                branchColors:colors,
+                subBranchColors:colors2,
+                tagColors: colors,
+                focusColor: '#00ff00',
+            } }, commitFileView: { getDiffs: getDiffs },codeDiffView:{getOriginFile} });
 
     return  <GitUI {...graphUIState.ui}/>
 }

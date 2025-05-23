@@ -242,7 +242,12 @@ const getMergeSimplePriorityBranchName = (branches: Branch[], commitRender: GitR
   return first?.name;
 };
 
-export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, renderCommits: GitRenderCommit[], allBranches: Branch[], tags: Tag[], seletedBranchName?: string, commitAction?: CommitAction) => {
+export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, renderCommits: GitRenderCommit[], allBranches: Branch[], tags: Tag[], seletedBranchName?: string, commitAction?: CommitAction, uiUtil?: {
+  colors?: {
+    subColors?: string[],
+    tagColors?: string[],
+  }
+}) => {
   const branchGraphMap: BranchGraphMap = new Map();
 
   const getOrCreateBranchGraph = (name: string, from?: BranchUserApi<ReactSvgElement> | string) => getOrCreateGraph(gitGraph, branchGraphMap, name, from);
@@ -310,21 +315,22 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
     // commit을 모두 찍고 graph 정리 작업
     // 1. 브런치 라벨 찍기
     // 2. Tag 찍기
-
+    const subColors = uiUtil?.colors?.subColors || githubSubColors
     // 브런치 라벨 찍기
     let noRenderColorIndex = 0;
     const branchLabelTags = allBranches.map((branch) => {
       let tempIndex = 0;
       let branchInfo: { branch: Branch; color: string } | undefined;
       branchGraphMap.forEach((_bG, key) => {
-        const color = githubColors[tempIndex % 10];
+        const colorSets = gitGraph?._graph?.template?.colors || githubColors
+        const color = colorSets[tempIndex % colorSets.length];
         tempIndex = tempIndex + 1;
         if (branch.name === key) {
           branchInfo = { branch, color };
         }
       });
       if (!branchInfo) {
-        branchInfo = { branch: branch, color: githubSubColors[noRenderColorIndex % 10] };
+        branchInfo = { branch: branch, color: subColors[noRenderColorIndex % subColors.length] };
         noRenderColorIndex++;
       }
       return branchInfo;
@@ -338,10 +344,13 @@ export const gitGraphRender = (gitGraph: GitgraphUserApi<ReactSvgElement>, rende
       });
     });
 
+    const existTags = tags.filter((tag) => historyMap.get(tag.commit.id))
+
+    const tagColors = uiUtil?.colors?.tagColors || gitTagColors
     // 4. Tag 찍기
-    tags.forEach((tag, index) => {
+    existTags.forEach((tag, index) => {
       try {
-        gitGraph.tag({ name: `Tag : [${tag.name}]`, ref: tag.commit.id, style: { ...tagStyle, color: gitTagColors[index % 20], strokeColor: gitTagColors[index % 20] } });
+        gitGraph.tag({ name: `Tag : [${tag.name}]`, ref: tag.commit.id, style: { ...tagStyle, color: tagColors[index % tagColors.length], strokeColor: tagColors[index % tagColors.length] } });
       } catch (e) {
         console.error(e);
       }
@@ -528,6 +537,7 @@ export const findTextElementByCommitID = (commitID: string) => {
   }
   // SVG 내의 모든 <text> 요소를 찾습니다. (필요시 범위를 더 좁힐 수 있습니다)
   const circleElements = document.querySelectorAll('.gitGraph svg circle'); // 'svg' 부분을 더 구체적인 부모 요소로 변경 가능
+
   // 1. NodeList를 실제 배열로 변환합니다.
   const elementsArray = Array.from(circleElements);
 
@@ -537,10 +547,10 @@ export const findTextElementByCommitID = (commitID: string) => {
   });
 };
 
-export const focusCircle = (el?: Element) => {
+export const focusCircle = (el?: Element, focusColor?: string) => {
   if (el) {
     // 3. setAttribute를 사용하여 stroke와 stroke-width 속성을 설정합니다.
-    const newStrokeColor = '#555555'; // 원하는 선 색상
+    const newStrokeColor = focusColor || '#e60707'; // 원하는 선 색상
     const newStrokeWidth = '5'; // 원하는 선 두께 (단위 없이 숫자만 입력 가능)
 
     el.setAttribute('stroke', newStrokeColor);

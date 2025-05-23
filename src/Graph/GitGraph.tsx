@@ -2,11 +2,11 @@ import type { GitGraphType } from './type.ts';
 import { useEffect, useMemo } from 'react';
 import { Gitgraph } from '@gitgraph/react';
 import { IconLoading } from '../common/svgs';
-import { githubTemplate } from './constant.ts';
+import {getGitTemplate, githubColors, githubSubColors, gitTagColors} from './constant.ts';
 import { findTextElementByCommitID, focusCircle, gitGraphRender, gitRawRefactor, unFocusCircle } from './graphutils.ts';
 import './gitgraph.css';
 
-export const GitGraph = ({ isLoading = false, gitData, commitAction, className, graphUtil }: GitGraphType) => {
+export const GitGraph = ({ isLoading = false, gitData, commitAction, className, graphUtil, colors }: GitGraphType) => {
   const convertData = useMemo(() => {
     if (gitData) {
       return { ...gitRawRefactor(gitData.tags, gitData.branchCommits), selectedBranchName: gitData.selectedBranchName };
@@ -18,7 +18,7 @@ export const GitGraph = ({ isLoading = false, gitData, commitAction, className, 
     let circleElement: Element | undefined = undefined;
     if (graphUtil?.focusCommitID) {
       circleElement = findTextElementByCommitID(graphUtil?.focusCommitID);
-      focusCircle(circleElement);
+      focusCircle(circleElement, colors?.focusColor);
     }
     return () => {
       if (circleElement) {
@@ -46,12 +46,26 @@ export const GitGraph = ({ isLoading = false, gitData, commitAction, className, 
       {convertData && (
         <Gitgraph
           options={{
-            template: githubTemplate,
+            template: getGitTemplate({colors: colors?.branchColors || githubColors}),
           }}
         >
           {(gitgraph) => {
             gitgraph.clear()
-            gitGraphRender(gitgraph, convertData.gitRenderCommits, convertData.allBranches, convertData.tags, convertData.selectedBranchName, commitAction);
+            gitGraphRender(
+                gitgraph,
+                convertData.gitRenderCommits,
+                convertData.allBranches,
+                convertData.tags,
+                convertData.selectedBranchName,
+                commitAction,
+                {
+                  colors:
+                      {
+                        subColors: colors?.subBranchColors || githubSubColors,
+                        tagColors: colors?.tagColors || gitTagColors
+                      }
+                }
+            );
           }}
         </Gitgraph>
       )}

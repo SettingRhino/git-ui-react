@@ -6,7 +6,7 @@ import type  { Branch, Commit, Tag, GitDiff } from './common/type.ts';
 
 //Graph
 import { GitGraph } from './Graph'
-import type { CommitAction, GitGraphState, GitGraphType, GraphUtil, BranchCommits } from './Graph'
+import type { CommitAction, GitGraphState, GitGraphType, GraphUtil, BranchCommits, BranchColors } from './Graph'
 
 //CodeDiff
 import { CodeDiff, convertDiffSetting } from "./CodeDiff";
@@ -39,7 +39,7 @@ import type { GiteaTagResponse, GiteaBranchResponse,GiteaCommitResponse, GiteaBr
 
 export type {
     Branch, BranchCommits, Commit, Tag, GitDiff,
-    CommitAction, GitGraphState, GitGraphType, GraphUtil,
+    CommitAction, GitGraphState, GitGraphType, GraphUtil, BranchColors,
     CodeDiffAdded, CodeDiffAlertLabel, CodeDiffChanged, CodeDiffType, CodeDiffUnknownLabel, ConvertDiffSettingType,
     CommitFileViewState, CommitFileViewType,
     CommitViewType,

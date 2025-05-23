@@ -40,8 +40,16 @@ export type GitGraphState = {
   };
 };
 
+export type BranchColors = {
+  branchColors?: string[];
+  subBranchColors?: string[];
+  tagColors?: string[];
+  focusColor?: string;
+}
+
 export type GitGraphType = {
   className?: string;
   commitAction?: CommitAction;
   graphUtil?: GraphUtil;
+  colors?: BranchColors
 } & GitGraphState;
