@@ -98,8 +98,8 @@ export const truncateString = (str: string) => {
   if (!str) {
     return ''; // 혹은 다른 기본값 반환
   }
-  if (str.length > 8) {
-    return str.slice(0, 8); // 0번째 인덱스부터 8번째 인덱스 전까지 잘라냅니다.
+  if (str.length > 7) {
+    return str.slice(0, 7); // 0번째 인덱스부터 8번째 인덱스 전까지 잘라냅니다.
   } else {
     return str; // 8글자 이하이면 원본 문자열을 그대로 반환합니다.
   }
